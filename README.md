@@ -14,6 +14,7 @@ Welcome to my cybersecurity learning journey! This repo documents my progress th
 ---
 
 ## 📆 Week-by-Week Overview
+Start Date: Oct 24, 2025
 
 | Week | Domain              | Focus Areas                              |
 |------|---------------------|-------------------------------------------|
