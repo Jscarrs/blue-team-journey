@@ -81,7 +81,7 @@ _Tools: Volatility, Cuckoo, IR Playbooks_
 
 | Date       | Update Made                          |
 |------------|--------------------------------------|
-| YYYY-MM-DD | Initial tracker created              |
+| 2024-10-27 | Initial tracker created              |
 | YYYY-MM-DD | Completed Day 1 – Splunk setup       |
 | YYYY-MM-DD | ...                                  |
 
