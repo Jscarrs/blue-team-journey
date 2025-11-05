@@ -20,3 +20,104 @@ Splunk is an SIEM tool
   SIEM -> Security Information and Event Management
   It's a platform that helps collect, analyze, and correlate logs from multiple sources to detect security events and threats.
   Centralizes and analyzes logs for security
+
+## Types of Windows Event Logs (important for detection)
+These logs are important for Defenders:
+
+### Security log
+It tracks logins, permission changes or account activity.
+The security log matters because it shows who logged in, successful or failed. Detects things like brute-force attacks, lateral movement, or new user creation
+  
+Key Event ID:
+4624 - Successful Login
+4625 - Failed Login
+4688 - New process (cmd, powershell)
+4720 - New User created
+4672 - Admin Account Login
+
+Example Detection:
+A spike in 4625 failures followed by a 4624 success = password guessing successful
+
+
+### System Log
+It logs OS-level events like reboots, driver failures, and hardware issues.
+The system log matters because for example
+  - Can show if an attacker restarts a system to bypass detection
+  - Detect driver tampering, like malware hiding in kernel drivers
+  - Watch for service failures during an incident
+
+Example Detection:
+Unexpected reboot logs during work hours may indicate forced reboots to disable AV (anti-virus).
+
+### Application Logs
+Tracks events from installed software and services.
+Applciation Logs matter because 
+
+Shows app-level errors (e.g., failed backups, web server crashes)
+
+Detects misconfigured services, abused applications, or custom tool output
+
+Example Sources:
+
+- SQL Server logs
+
+- Antivirus software alerts
+
+- Browser or Office app crashes
+
+Example Detection:
+
+AV logs appearing in application log showing threats detected (can enrich alerts).
+
+### PowerShell Logs
+Shows what PowerShell scripts ran, what modules loaded, and what commands were typed.
+
+Powershell logs matter because 
+- PowerShell is a common attacker tool (especially for fileless attacks)
+
+- Lets you see scripts and commands, not just the fact that PowerShell ran
+
+Common Event IDs:
+
+- 4104 – Script Block Logging (full command)
+
+- 4103 – Module logging
+
+- 4688 (Security log) – PowerShell.exe process start
+
+Example Detection:
+Event 4104 shows a long, obfuscated script with iex or base64 — classic malicious behavior
+
+### Sysmon Logs (Advanced – Requires Sysmon Install)
+A Microsoft tool that logs detailed activity, far beyond regular Windows logs.
+Sysmon logs matter becuase 
+- Tracks things like network connections, file writes, registry changes, and parent-child processes
+
+- Extremely useful for threat hunting and correlating suspicious behavior
+
+Popular Event IDs (Sysmon):
+
+1 – Process creation (with command line + hash!)
+
+3 – Network connection
+
+7 – DLL load
+
+11 – File creation
+
+13 – Registry value set
+
+Example Detection:
+Sysmon Event 3 shows PowerShell.exe making an outbound connection to a strange IP.
+
+
+
+| Log Type        | What It Tracks                            | Why It’s Useful for Defenders                  |
+| --------------- | ----------------------------------------- | ---------------------------------------------- |
+| **Security**    | Logins, user changes, process starts      | Detects attacks, logins, privilege use         |
+| **System**      | Reboots, driver/service issues            | Detects tampering, forced reboots, instability |
+| **Application** | App-specific events, crashes, AV alerts   | Enriches investigations with app context       |
+| **PowerShell**  | Commands/scripts run via PowerShell       | Catches fileless and script-based attacks      |
+| **Sysmon**      | Deep system-level activity (if installed) | High-fidelity detection and threat hunting     |
+
+
